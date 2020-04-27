@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "165192769374",
+    "firebase_url": "https://community-favour-aider-190c7.firebaseio.com",
+    "project_id": "community-favour-aider-190c7",
+    "storage_bucket": "community-favour-aider-190c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165192769374:android:2a0d666774a0cba34d79cf",
+        "android_client_info": {
+          "package_name": "com.example.communityfavouraider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165192769374-j68313i3mdqv1vsbjk26ra83766n2nve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAE0_d3clVsFgc9ZDOJAypkXGjU4x9-SsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165192769374-j68313i3mdqv1vsbjk26ra83766n2nve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

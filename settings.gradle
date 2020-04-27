@@ -1,0 +1,2 @@
+rootProject.name='CommunityFavourAider'
+include ':app'
