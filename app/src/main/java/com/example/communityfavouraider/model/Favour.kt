@@ -5,6 +5,9 @@ import com.google.firebase.firestore.IgnoreExtraProperties
 @IgnoreExtraProperties
 class Favour {
     private var title: String? = null
+    private var description: String? = null
+
+    // TODO: adapt location imformation to GoogleMapsAPI
     private var city: String? = null
 
     constructor(favour: Favour) {
