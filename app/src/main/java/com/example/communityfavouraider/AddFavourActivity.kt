@@ -1,18 +1,26 @@
 package com.example.communityfavouraider
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.communityfavouraider.model.Favour
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class AddFavourActivity : AppCompatActivity(), View.OnClickListener {
 
+    private val TAG = "AddFavourActivity"
+
     private lateinit var favourTitle: EditText
     private lateinit var favourDescription: EditText
     private lateinit var favourCity: EditText
+
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,11 +72,29 @@ class AddFavourActivity : AppCompatActivity(), View.OnClickListener {
     private fun onSubmitClicked() {
         if (isAnyEditTextInErrorState()) {
             // TODO: make popup window
-            findViewById<TextView>(R.id.add_favour_text).text = "Error occured!"
+            findViewById<TextView>(R.id.add_favour_text).text = "One of the forms is in error state!"
+            Log.w(TAG, "One of the forms is in error state!")
 
             return
         }
 
         findViewById<TextView>(R.id.add_favour_text).text = "OK!"
+        Log.w(TAG, "OK!")
+
+        val favours: CollectionReference = firestore.collection("favours");
+
+        val favour = Favour(favourTitle.text.toString(),
+                            favourDescription.text.toString(),
+                            favourCity.text.toString())
+
+        favours.add(favour)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
+            }
+
+        onBackPressed()
     }
 }
