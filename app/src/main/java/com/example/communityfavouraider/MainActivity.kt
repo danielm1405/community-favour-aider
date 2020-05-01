@@ -2,6 +2,8 @@ package com.example.communityfavouraider
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 
@@ -47,6 +49,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         when (v!!.id) {
             R.id.add_button -> onAddClicked(v)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_sign_out -> {
+                AuthUI.getInstance().signOut(this)
+                startSignIn()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun shouldStartSignIn(): Boolean {
