@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.communityfavouraider.model.Favour
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -83,13 +84,18 @@ class AddFavourActivity : AppCompatActivity(), View.OnClickListener {
 
         val favours: CollectionReference = firestore.collection("favours");
 
-        val favour = Favour(favourTitle.text.toString(),
+        val userName = (FirebaseAuth.getInstance().currentUser?.displayName ?:
+                            FirebaseAuth.getInstance().currentUser?.email) ?: ""
+
+        val favour = Favour(FirebaseAuth.getInstance().currentUser!!.uid,
+                            userName,
+                            favourTitle.text.toString(),
                             favourDescription.text.toString(),
                             favourCity.text.toString())
 
         favours.add(favour)
             .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
+                Log.i(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding document", e)

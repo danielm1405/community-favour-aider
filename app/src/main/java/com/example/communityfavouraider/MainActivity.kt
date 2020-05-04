@@ -42,7 +42,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             startSignIn()
         }
 
-        findViewById<TextView>(R.id.main_text).text = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        findViewById<TextView>(R.id.main_text).text =
+                FirebaseAuth.getInstance().currentUser?.uid.toString()
     }
 
     override fun onClick(v: View?) {
