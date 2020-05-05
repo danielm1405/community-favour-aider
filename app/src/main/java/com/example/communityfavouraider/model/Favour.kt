@@ -5,7 +5,7 @@ import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 
 @IgnoreExtraProperties
-data class Favour(val userId: String,
+data class Favour(val userId: String = "",
                   val userName: String = "",
                   var title: String = "",
                   var description: String = "",

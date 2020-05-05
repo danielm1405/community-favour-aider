@@ -2,30 +2,56 @@ package com.example.communityfavouraider
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.communityfavouraider.adapter.FavourAdapter
 import com.example.communityfavouraider.viewmodel.MainActivityViewModel
-
 import com.firebase.ui.auth.AuthUI
-
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-
+import com.google.firebase.firestore.Query
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(),
+                     View.OnClickListener {
 
     private val TAG = "MainActivity"
     private val RC_SIGN_IN = 9001
+    private val LIMIT: Long = 20
 
     private lateinit var viewModel: MainActivityViewModel
+    private lateinit var favourRecycler: RecyclerView
+
+    private var query: Query = FirebaseFirestore.getInstance().collection("favours")
+        .orderBy("timeStamp", Query.Direction.DESCENDING)
+        .limit(LIMIT)
+
+    private var onFavourSelectedListener: FavourAdapter.OnFavourSelectedListener =
+        object : FavourAdapter.OnFavourSelectedListener() {
+            override fun onFavourSelected(restaurant: DocumentSnapshot?) {
+                // TODO: implement
+                Log.i(TAG, "Favour selected, go to activity that shows details")
+            }
+        }
+
+    private val favourAdapter: FavourAdapter =
+        object : FavourAdapter(query, onFavourSelectedListener) {
+            override fun onDataChanged() {
+                if (itemCount == 0) {
+                    favourRecycler.visibility = View.GONE
+                } else {
+                    favourRecycler.visibility = View.VISIBLE
+                }
+            }
+        }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,14 +62,27 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
 
+        favourRecycler = findViewById(R.id.recycler_restaurants)
+        favourRecycler.layoutManager = LinearLayoutManager(this)
+        favourRecycler.adapter = favourAdapter
+
         findViewById<View>(R.id.add_button).setOnClickListener(this)
 
         if (shouldStartSignIn()) {
             startSignIn()
         }
+    }
 
-        findViewById<TextView>(R.id.main_text).text =
-                FirebaseAuth.getInstance().currentUser?.uid.toString()
+    override fun onStart() {
+        super.onStart()
+
+        favourAdapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        favourAdapter.stopListening()
     }
 
     override fun onClick(v: View?) {
