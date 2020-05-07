@@ -7,16 +7,28 @@
     tools:context=".FavourDetailsActivity" >
 
     <TextView
-        android:id="@+id/favour_item_title"
-        style="@style/AppTheme.Subheader"
+        android:id="@+id/favour_item_modification_date"
+        style="@style/AppTheme.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        tools:text="12.12.2112" />
+
+    <TextView
+        android:id="@+id/favour_item_title"
+        style="@style/AppTheme.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/favour_item_modification_date"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="-2dp"
-        android:layout_marginStart="8dp"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="3"
         android:textColor="@color/greyPrimary"
         tools:text="Favour title" />
 
@@ -32,20 +44,40 @@
 
     <TextView
         android:id="@+id/favour_item_by"
-        style="@style/AppTheme.Body1"
+        style="@style/AppTheme.Subheader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_alignLeft="@+id/favour_item_title"
         android:layout_below="@+id/favour_item_description"
-        android:text="by: " />
+        android:text="Added by: " />
 
     <TextView
         android:id="@+id/favour_item_user_name"
-        style="@style/AppTheme.Body1"
+        style="@style/AppTheme.Subheader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/favour_item_by"
-        android:layout_alignTop="@+id/favour_item_by"
+        android:layout_alignBottom="@+id/favour_item_by"
         tools:text="User name" />
+
+    <TextView
+        android:id="@+id/favour_item_location"
+        style="@style/AppTheme.Subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_alignLeft="@+id/favour_item_title"
+        android:layout_below="@+id/favour_item_by"
+        android:text="Location: " />
+
+    <TextView
+        android:id="@+id/favour_item_location_city"
+        style="@style/AppTheme.Subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/favour_item_location"
+        android:layout_alignBottom="@+id/favour_item_location"
+        tools:text="Warsaw" />
 
 </RelativeLayout>
