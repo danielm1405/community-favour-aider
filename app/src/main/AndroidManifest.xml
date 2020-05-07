@@ -18,6 +18,8 @@
         </activity>
 
         <activity android:name=".AddFavourActivity"></activity>
+
+        <activity android:name=".FavourDetailsActivity"></activity>
     </application>
 
 </manifest>

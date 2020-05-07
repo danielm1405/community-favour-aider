@@ -12,14 +12,19 @@
         style="@style/AppTheme.Subheader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/favour_item_help_me"
+        android:layout_toStartOf="@+id/favour_item_help_me"
         android:layout_marginBottom="4dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="-2dp"
-        android:layout_marginStart="8dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/greyPrimary"
-        tools:text="Favour title" />
+        tools:text="Favour title"
+         />
 
     <TextView
         android:id="@+id/favour_item_description"
@@ -28,8 +33,13 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/favour_item_title"
         android:layout_alignStart="@+id/favour_item_title"
+        android:layout_toLeftOf="@+id/favour_item_help_me"
+        android:layout_toStartOf="@+id/favour_item_help_me"
         android:layout_below="@+id/favour_item_title"
-        tools:text="Favour veeeryyy long description" />
+        android:ellipsize="end"
+        android:maxLines="2"
+        tools:text="Favour veeeryyy long description"
+         />
 
     <TextView
         android:id="@+id/favour_item_by"

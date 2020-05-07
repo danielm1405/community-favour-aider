@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.communityfavouraider.adapter.FavourAdapter
+import com.example.communityfavouraider.model.Favour
 import com.example.communityfavouraider.viewmodel.MainActivityViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
@@ -35,10 +36,13 @@ class MainActivity : AppCompatActivity(),
         .limit(LIMIT)
 
     private var onFavourSelectedListener: FavourAdapter.OnFavourSelectedListener =
-        object : FavourAdapter.OnFavourSelectedListener() {
-            override fun onFavourSelected(restaurant: DocumentSnapshot?) {
-                // TODO: implement
+        object : FavourAdapter.OnFavourSelectedListener(this) {
+            override fun onFavourSelected(favour: DocumentSnapshot?) {
                 Log.i(TAG, "Favour selected, go to activity that shows details")
+
+                val intent = Intent(context, FavourDetailsActivity::class.java)
+                intent.putExtra(FavourDetailsActivity.KEY_FAVOUR_ID, favour?.id)
+                startActivity(intent)
             }
         }
 
@@ -86,7 +90,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onClick(v: View?) {
-        when (v!!.id) {
+        when (v?.id) {
             R.id.add_button -> onAddClicked(v)
         }
     }
