@@ -1,5 +1,6 @@
 package com.example.communityfavouraider.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +14,8 @@ import com.google.firebase.firestore.Query
 open class FavourAdapter(query: Query, private val listener: OnFavourSelectedListener) :
                 FirestoreAdapter<FavourAdapter.ViewHolder>(query) {
 
-    abstract class OnFavourSelectedListener {
-        abstract fun onFavourSelected(restaurant: DocumentSnapshot?)
+    abstract class OnFavourSelectedListener(public val context: Context) {
+        abstract fun onFavourSelected(favour: DocumentSnapshot?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ViewHolder {
