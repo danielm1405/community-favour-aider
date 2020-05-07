@@ -29,9 +29,9 @@ open class FavourAdapter(query: Query, private val listener: OnFavourSelectedLis
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private var titleView: TextView = itemView.findViewById(R.id.favour_item_title)
-        private var descriptionView: TextView = itemView.findViewById(R.id.favour_item_description)
-        private var userNameView: TextView = itemView.findViewById(R.id.favour_item_user_name)
+        private var titleView: TextView = view.findViewById(R.id.favour_item_title)
+        private var descriptionView: TextView = view.findViewById(R.id.favour_item_description)
+        private var userNameView: TextView = view.findViewById(R.id.favour_item_user_name)
 
         fun bind(snapshot: DocumentSnapshot, listener: OnFavourSelectedListener?) {
             val favour: Favour? = snapshot.toObject(Favour::class.java)
@@ -39,6 +39,8 @@ open class FavourAdapter(query: Query, private val listener: OnFavourSelectedLis
             titleView.text = favour?.title
             descriptionView.text = favour?.description
             userNameView.text = favour?.userName
+
+            itemView.setOnClickListener { listener?.onFavourSelected(snapshot) }
         }
     }
 }
