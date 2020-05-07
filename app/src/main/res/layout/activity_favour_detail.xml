@@ -7,7 +7,7 @@
     tools:context=".FavourDetailsActivity" >
 
     <TextView
-        android:id="@+id/favour_item_modification_date"
+        android:id="@+id/favour_details_modification_date"
         style="@style/AppTheme.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,11 +19,11 @@
         tools:text="12.12.2112" />
 
     <TextView
-        android:id="@+id/favour_item_title"
+        android:id="@+id/favour_details_title"
         style="@style/AppTheme.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/favour_item_modification_date"
+        android:layout_below="@id/favour_details_modification_date"
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
         android:layout_marginBottom="4dp"
@@ -33,51 +33,64 @@
         tools:text="Favour title" />
 
     <TextView
-        android:id="@+id/favour_item_description"
+        android:id="@+id/favour_details_description"
         style="@style/AppTheme.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/favour_item_title"
-        android:layout_alignStart="@+id/favour_item_title"
-        android:layout_below="@+id/favour_item_title"
+        android:layout_alignLeft="@+id/favour_details_title"
+        android:layout_alignStart="@+id/favour_details_title"
+        android:layout_below="@+id/favour_details_title"
         tools:text="Favour veeeryyy long description" />
 
     <TextView
-        android:id="@+id/favour_item_by"
+        android:id="@+id/favour_details_by"
         style="@style/AppTheme.Subheader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_alignLeft="@+id/favour_item_title"
-        android:layout_below="@+id/favour_item_description"
+        android:layout_alignLeft="@+id/favour_details_title"
+        android:layout_below="@+id/favour_details_description"
         android:text="Added by: " />
 
     <TextView
-        android:id="@+id/favour_item_user_name"
+        android:id="@+id/favour_details_user_name"
         style="@style/AppTheme.Subheader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/favour_item_by"
-        android:layout_alignBottom="@+id/favour_item_by"
+        android:layout_toRightOf="@+id/favour_details_by"
+        android:layout_alignBottom="@+id/favour_details_by"
         tools:text="User name" />
 
     <TextView
-        android:id="@+id/favour_item_location"
+        android:id="@+id/favour_details_location"
         style="@style/AppTheme.Subheader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_alignLeft="@+id/favour_item_title"
-        android:layout_below="@+id/favour_item_by"
+        android:layout_alignLeft="@+id/favour_details_title"
+        android:layout_below="@+id/favour_details_by"
         android:text="Location: " />
 
     <TextView
-        android:id="@+id/favour_item_location_city"
+        android:id="@+id/favour_details_location_city"
         style="@style/AppTheme.Subheader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/favour_item_location"
-        android:layout_alignBottom="@+id/favour_item_location"
+        android:layout_toRightOf="@+id/favour_details_location"
+        android:layout_alignBottom="@+id/favour_details_location"
         tools:text="Warsaw" />
+    
+    <Button
+        android:id="@+id/favour_details_accept"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/favour_details_location"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"
+        android:text="Accept" />
 
 </RelativeLayout>

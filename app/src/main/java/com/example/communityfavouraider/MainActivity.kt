@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onClick(v: View?) {
-        when (v!!.id) {
+        when (v?.id) {
             R.id.add_button -> onAddClicked(v)
         }
     }

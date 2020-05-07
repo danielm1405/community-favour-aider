@@ -3,6 +3,8 @@ package com.example.communityfavouraider
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.communityfavouraider.model.Favour
@@ -12,6 +14,7 @@ import java.time.format.DateTimeFormatter
 
 
 class FavourDetailsActivity : AppCompatActivity(),
+                              View.OnClickListener,
                               EventListener<DocumentSnapshot> {
 
     private val TAG = "FavourDetailsActivity"
@@ -36,11 +39,13 @@ class FavourDetailsActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favour_detail)
 
-        favourTitle = findViewById(R.id.favour_item_title)
-        favourDescription = findViewById(R.id.favour_item_description)
-        favourUserName = findViewById(R.id.favour_item_user_name)
-        favourModificationDate = findViewById(R.id.favour_item_modification_date)
-        favourCity = findViewById(R.id.favour_item_location_city)
+        favourTitle = findViewById(R.id.favour_details_title)
+        favourDescription = findViewById(R.id.favour_details_description)
+        favourUserName = findViewById(R.id.favour_details_user_name)
+        favourModificationDate = findViewById(R.id.favour_details_modification_date)
+        favourCity = findViewById(R.id.favour_details_location_city)
+
+        findViewById<Button>(R.id.favour_details_accept).setOnClickListener(this)
 
         val favourId: String = intent.getStringExtra(KEY_FAVOUR_ID)
             ?: throw IllegalArgumentException("Must pass extra $KEY_FAVOUR_ID")
@@ -62,6 +67,12 @@ class FavourDetailsActivity : AppCompatActivity(),
         favourRegistration.remove()
     }
 
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.favour_details_accept -> onAcceptClicked()
+        }
+    }
+
     override fun onEvent(snapshot: DocumentSnapshot?, e: FirebaseFirestoreException?) {
         if (e != null) {
             Log.w(TAG, "favour:onEvent", e)
@@ -75,5 +86,11 @@ class FavourDetailsActivity : AppCompatActivity(),
         favourUserName.text = favour?.userName
         favourModificationDate.text = dateFormatter.format(favour?.timeStamp)
         favourCity.text = favour?.city
+    }
+
+    private fun onAcceptClicked() {
+        Log.w(TAG, "Accept clicked!")
+        // TODO: implement
+        findViewById<Button>(R.id.favour_details_accept).text = "Clicked - TODO: impelement"
     }
 }

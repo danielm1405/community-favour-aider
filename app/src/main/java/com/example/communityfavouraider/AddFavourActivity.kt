@@ -39,7 +39,7 @@ class AddFavourActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id) {
+        when(v?.id) {
             R.id.add_favour_cancel -> onCancelClicked()
             R.id.add_favour_submit -> onSubmitClicked()
         }
