@@ -1,7 +1,9 @@
 package com.example.communityfavouraider
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -11,9 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.communityfavouraider.adapter.FavourAdapter
-import com.example.communityfavouraider.model.Favour
 import com.example.communityfavouraider.viewmodel.MainActivityViewModel
 import com.firebase.ui.auth.AuthUI
+import com.google.api.client.util.DateTime
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -58,9 +60,16 @@ class MainActivity : AppCompatActivity(),
         }
 
 
+    @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT > 9) {
+            val policy =
+                StrictMode.ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+        }
 
         FirebaseFirestore.setLoggingEnabled(true)
 
@@ -74,6 +83,32 @@ class MainActivity : AppCompatActivity(),
 
         if (shouldStartSignIn()) {
             startSignIn()
+        }
+
+        val googleCalendar = GoogleCalendar()
+        val calendarService = googleCalendar.calendarService
+        // List the next 10 events from the primary calendar.
+        val now = DateTime(System.currentTimeMillis())
+        val events = calendarService.events()
+            .list("primary")
+            .setMaxResults(10)
+            .setTimeMin(now)
+            .setOrderBy("startTime")
+            .setSingleEvents(true)
+            .execute()
+        val items = events.items
+
+        if (items.size == 0) {
+            Log.i(TAG, "No upcoming events found.")
+        } else {
+            Log.i(TAG, "Upcoming events")
+            for (event in items) {
+                var start: DateTime? = event.start.dateTime
+                if (start == null) {
+                    start = event.start.date
+                }
+                Log.i(TAG, "${event.summary} $start")
+            }
         }
     }
 
