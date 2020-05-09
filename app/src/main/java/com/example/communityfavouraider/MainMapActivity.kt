@@ -17,11 +17,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
 import java.util.*
+import kotlin.collections.HashMap
+
 
 class MainMapActivity : AppCompatActivity(),
                         OnMapReadyCallback {
@@ -31,13 +34,15 @@ class MainMapActivity : AppCompatActivity(),
 
     private lateinit var viewModel: MainActivityViewModel
 
+    private var markerFavourIdMap = HashMap<Marker, String>()
+
     private var map: GoogleMap? = null
 
     // very bad, but necessary with this architecture :(
     private var onFavourSelectedListener: FavourAdapter.OnFavourSelectedListener =
         object : FavourAdapter.OnFavourSelectedListener(this) {
             override fun onFavourSelected(favour: DocumentSnapshot?) {
-                Log.i(TAG, "Favour selected, do nothing.")
+                Log.d(TAG, "Favour selected, do nothing.")
             }
         }
 
@@ -57,9 +62,6 @@ class MainMapActivity : AppCompatActivity(),
         }
 
         findViewById<View>(R.id.main_map_add_button).setOnClickListener {
-                val favour = viewModel.favourAdapter?.getFavour(2)
-                Log.i(TAG, "2nd favour: ${favour!!.title}")
-
                 val intent = Intent(this, AddFavourActivity::class.java)
                 startActivity(intent)
         }
@@ -84,12 +86,21 @@ class MainMapActivity : AppCompatActivity(),
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        Log.i(TAG, "Inside onMapReady")
-
         map = googleMap
 
-        val centerOfPoland = LatLng(52.335, 19.381)
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(centerOfPoland, 5F))
+        map?.setOnInfoWindowLongClickListener { marker ->
+            val favourId = markerFavourIdMap[marker]
+
+            Log.w(TAG, "Clicked at marker '${favourId}'," +
+                    "starting FavourDetailsActivity.")
+
+            val intent = Intent(this, FavourDetailsActivity::class.java)
+            intent.putExtra(FavourDetailsActivity.KEY_FAVOUR_ID, favourId)
+            startActivity(intent)
+        }
+
+        val warsaw = LatLng(52.228, 21.005)
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(warsaw, 11F))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -129,7 +140,9 @@ class MainMapActivity : AppCompatActivity(),
         viewModel.isSigningIn = true
     }
 
-    private fun addFavourMarker(favour: Favour) {
+    private fun addFavourMarker(snapshot: DocumentSnapshot) {
+        val favour = snapshot.toObject(Favour::class.java) ?: return
+
         val latLng = LatLng(favour.latitiude, favour.longitude)
         var title = favour.title
         if (title.length > 15) {
@@ -140,11 +153,16 @@ class MainMapActivity : AppCompatActivity(),
             userName = userName.take(20) + "..."
         }
 
-        map?.addMarker(MarkerOptions()
+        val marker: Marker = map?.addMarker(MarkerOptions()
             .position(latLng)
             .title(title)
-            .snippet("user: $userName")
-        )
+            .snippet("user: $userName"))
+            ?: return
+
+        if (!markerFavourIdMap.containsKey(marker))
+        {
+            markerFavourIdMap[marker] = snapshot.id
+        }
     }
 
     private fun resetAllFavourMarkers() {
@@ -152,12 +170,17 @@ class MainMapActivity : AppCompatActivity(),
             return
         }
 
-        map?.clear()
+        clearMarkers()
 
         val itemsCount = viewModel.favourAdapter?.itemCount ?: 0
         for (itemIndex in 0 until itemsCount) {
-            val favour = viewModel.favourAdapter?.getFavour(itemIndex) ?: continue
-            addFavourMarker(favour)
+            val favourId = viewModel.favourAdapter?.getSnapshot(itemIndex) ?: continue
+            addFavourMarker(favourId)
         }
+    }
+
+    private fun clearMarkers() {
+        map?.clear()
+        markerFavourIdMap.clear()
     }
 }

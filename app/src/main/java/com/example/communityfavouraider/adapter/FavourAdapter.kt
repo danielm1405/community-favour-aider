@@ -28,15 +28,6 @@ open class FavourAdapter(query: Query, private val listener: OnFavourSelectedLis
         holder.bind(getSnapshot(position), listener)
     }
 
-    public fun getFavour(position: Int) : Favour? {
-        if (position > itemCount)
-        {
-            return null
-        }
-
-        return getSnapshot(position).toObject(Favour::class.java)
-    }
-
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private var titleView: TextView = view.findViewById(R.id.favour_item_title)
