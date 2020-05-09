@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainMapActivity">
 
-    <!-- Main Restaurants recycler -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/main_recycler_restaurants"
+    <fragment
+        android:id="@+id/main_map_map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/filter_bar_container"
-        android:background="@android:color/white"
-        tools:listitem="@layout/item_favour" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/favour_details_location"
+        android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/main_add_button"
+        android:id="@+id/main_map_add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -25,11 +22,19 @@
         app:srcCompat="@drawable/ic_add_24dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/main_google_maps_button"
+        android:id="@+id/main_map_recycler_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="16dp"
-        android:src="@drawable/google_maps_logo" />
+        app:srcCompat="@drawable/ic_list_white_24dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/main_map_refresh_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_refresh_white_24dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -26,14 +26,9 @@ class MainActivity : AppCompatActivity(),
 
     private val TAG = "MainActivity"
     private val RC_SIGN_IN = 9001
-    private val LIMIT: Long = 20
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var favourRecycler: RecyclerView
-
-    private var query: Query = FirebaseFirestore.getInstance().collection("favours")
-        .orderBy("timeStamp", Query.Direction.DESCENDING)
-        .limit(LIMIT)
 
     private var onFavourSelectedListener: FavourAdapter.OnFavourSelectedListener =
         object : FavourAdapter.OnFavourSelectedListener(this) {
@@ -46,17 +41,6 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
-    private val favourAdapter: FavourAdapter =
-        object : FavourAdapter(query, onFavourSelectedListener) {
-            override fun onDataChanged() {
-                if (itemCount == 0) {
-                    favourRecycler.visibility = View.GONE
-                } else {
-                    favourRecycler.visibility = View.VISIBLE
-                }
-            }
-        }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,12 +49,16 @@ class MainActivity : AppCompatActivity(),
         FirebaseFirestore.setLoggingEnabled(true)
 
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
+        if (viewModel.favourAdapter == null) {
+            viewModel.initFavourAdapter(onFavourSelectedListener)
+        }
 
-        favourRecycler = findViewById(R.id.recycler_restaurants)
+        favourRecycler = findViewById(R.id.main_recycler_restaurants)
         favourRecycler.layoutManager = LinearLayoutManager(this)
-        favourRecycler.adapter = favourAdapter
+        favourRecycler.adapter = viewModel.favourAdapter
 
-        findViewById<View>(R.id.add_button).setOnClickListener(this)
+        findViewById<View>(R.id.main_add_button).setOnClickListener(this)
+        findViewById<View>(R.id.main_google_maps_button).setOnClickListener(this)
 
         if (shouldStartSignIn()) {
             startSignIn()
@@ -80,18 +68,19 @@ class MainActivity : AppCompatActivity(),
     override fun onStart() {
         super.onStart()
 
-        favourAdapter.startListening()
+        viewModel.favourAdapter?.startListening()
     }
 
     override fun onStop() {
         super.onStop()
 
-        favourAdapter.stopListening()
+        viewModel.favourAdapter?.stopListening()
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.add_button -> onAddClicked(v)
+            R.id.main_add_button -> onAddClicked(v)
+            R.id.main_google_maps_button -> onGoogleMapButtonClicked(v)
         }
     }
 
@@ -127,8 +116,16 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun onAddClicked(v: View?) {
+        Log.i(TAG, "onAddClicked called, starting AddFavourActivity")
+
         val intent = Intent(this, AddFavourActivity::class.java)
         startActivity(intent)
     }
 
+    private fun onGoogleMapButtonClicked(v: View?) {
+        Log.i(TAG, "onGoogleMapButtonClicked called, starting MainMapActivity")
+
+        val intent = Intent(this, MainMapActivity::class.java)
+        startActivity(intent)
+    }
 }
