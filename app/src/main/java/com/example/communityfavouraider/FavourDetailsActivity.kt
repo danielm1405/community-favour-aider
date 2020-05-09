@@ -1,6 +1,5 @@
 package com.example.communityfavouraider
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.communityfavouraider.model.Favour
 import com.google.firebase.firestore.*
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 
 
 class FavourDetailsActivity : AppCompatActivity(),
@@ -27,7 +25,7 @@ class FavourDetailsActivity : AppCompatActivity(),
     private lateinit var favourDescription: TextView
     private lateinit var favourUserName: TextView
     private lateinit var favourModificationDate: TextView
-    private lateinit var favourCity: TextView
+    private lateinit var favourAdress: TextView
 
     private lateinit var favourRef: DocumentReference
     private lateinit var favourRegistration: ListenerRegistration
@@ -43,7 +41,7 @@ class FavourDetailsActivity : AppCompatActivity(),
         favourDescription = findViewById(R.id.favour_details_description)
         favourUserName = findViewById(R.id.favour_details_user_name)
         favourModificationDate = findViewById(R.id.favour_details_modification_date)
-        favourCity = findViewById(R.id.favour_details_location_city)
+        favourAdress = findViewById(R.id.favour_details_location_adress)
 
         findViewById<Button>(R.id.favour_details_accept).setOnClickListener(this)
 
@@ -85,7 +83,7 @@ class FavourDetailsActivity : AppCompatActivity(),
         favourDescription.text = favour?.description
         favourUserName.text = favour?.userName
         favourModificationDate.text = dateFormatter.format(favour?.timeStamp)
-        favourCity.text = favour?.city
+        favourAdress.text = favour?.adress
     }
 
     private fun onAcceptClicked() {

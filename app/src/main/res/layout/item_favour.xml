@@ -23,8 +23,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/greyPrimary"
-        tools:text="Favour title"
-         />
+        tools:text="Favour title" />
 
     <TextView
         android:id="@+id/favour_item_description"
@@ -38,8 +37,7 @@
         android:layout_below="@+id/favour_item_title"
         android:ellipsize="end"
         android:maxLines="2"
-        tools:text="Favour veeeryyy long description"
-         />
+        tools:text="Favour veeeryyy long description" />
 
     <TextView
         android:id="@+id/favour_item_by"

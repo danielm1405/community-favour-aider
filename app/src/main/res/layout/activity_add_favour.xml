@@ -27,12 +27,18 @@
         android:layout_gravity="center_horizontal"
         android:hint="Describe Your favour" />
 
-    <EditText
-        android:id="@+id/add_favour_city"
+    <fragment
+        android:id="@+id/add_favour_location_map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:hint="Enter where Your favour takes place" />
+        android:layout_height="200dp"
+        android:layout_below="@+id/favour_details_location"
+        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+    <TextView
+        android:id="@+id/add_favour_adress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,3 +63,4 @@
 
     </LinearLayout>
 </LinearLayout>
+
