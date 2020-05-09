@@ -9,13 +9,18 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.communityfavouraider.adapter.FavourAdapter
+import com.example.communityfavouraider.model.Favour
 import com.example.communityfavouraider.viewmodel.MainActivityViewModel
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
+import com.google.firebase.firestore.EventListener
 import java.util.*
 
 class MainMapActivity : AppCompatActivity(),
@@ -26,7 +31,7 @@ class MainMapActivity : AppCompatActivity(),
 
     private lateinit var viewModel: MainActivityViewModel
 
-    private lateinit var map: GoogleMap
+    private var map: GoogleMap? = null
 
     // very bad, but necessary with this architecture :(
     private var onFavourSelectedListener: FavourAdapter.OnFavourSelectedListener =
@@ -39,6 +44,10 @@ class MainMapActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_map)
+
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.main_map_map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         FirebaseFirestore.setLoggingEnabled(true)
 
@@ -56,6 +65,9 @@ class MainMapActivity : AppCompatActivity(),
         }
         findViewById<View>(R.id.main_map_recycler_button).setOnClickListener {
             onBackPressed()
+        }
+        findViewById<View>(R.id.main_map_refresh_button).setOnClickListener {
+            resetAllFavourMarkers()
         }
     }
 
@@ -75,10 +87,17 @@ class MainMapActivity : AppCompatActivity(),
         Log.i(TAG, "Inside onMapReady")
 
         map = googleMap
+
+        val centerOfPoland = LatLng(52.335, 19.381)
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(centerOfPoland, 5F))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+
+        // sooo baaad :(
+        resetAllFavourMarkers()
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -89,6 +108,7 @@ class MainMapActivity : AppCompatActivity(),
                 startSignIn()
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -107,5 +127,37 @@ class MainMapActivity : AppCompatActivity(),
 
         startActivityForResult(intent, RC_SIGN_IN)
         viewModel.isSigningIn = true
+    }
+
+    private fun addFavourMarker(favour: Favour) {
+        val latLng = LatLng(favour.latitiude, favour.longitude)
+        var title = favour.title
+        if (title.length > 15) {
+            title = title.take(12) + "..."
+        }
+        var userName = favour.userName
+        if (userName.length > 23) {
+            userName = userName.take(20) + "..."
+        }
+
+        map?.addMarker(MarkerOptions()
+            .position(latLng)
+            .title(title)
+            .snippet("user: $userName")
+        )
+    }
+
+    private fun resetAllFavourMarkers() {
+        if (map == null) {
+            return
+        }
+
+        map?.clear()
+
+        val itemsCount = viewModel.favourAdapter?.itemCount ?: 0
+        for (itemIndex in 0 until itemsCount) {
+            val favour = viewModel.favourAdapter?.getFavour(itemIndex) ?: continue
+            addFavourMarker(favour)
+        }
     }
 }
