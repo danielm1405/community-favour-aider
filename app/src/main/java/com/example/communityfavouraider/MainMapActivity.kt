@@ -8,43 +8,37 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.communityfavouraider.adapter.FavourAdapter
-import com.example.communityfavouraider.model.Favour
 import com.example.communityfavouraider.viewmodel.MainActivityViewModel
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import java.util.*
 
+class MainMapActivity : AppCompatActivity(),
+                        OnMapReadyCallback {
 
-class MainActivity : AppCompatActivity(),
-                     View.OnClickListener {
-
-    private val TAG = "MainActivity"
+    private val TAG = "MainMapActivity"
     private val RC_SIGN_IN = 9001
 
     private lateinit var viewModel: MainActivityViewModel
-    private lateinit var favourRecycler: RecyclerView
 
+    private lateinit var map: GoogleMap
+
+    // very bad, but necessary with this architecture :(
     private var onFavourSelectedListener: FavourAdapter.OnFavourSelectedListener =
         object : FavourAdapter.OnFavourSelectedListener(this) {
             override fun onFavourSelected(favour: DocumentSnapshot?) {
-                Log.i(TAG, "Favour selected, go to activity that shows details")
-
-                val intent = Intent(context, FavourDetailsActivity::class.java)
-                intent.putExtra(FavourDetailsActivity.KEY_FAVOUR_ID, favour?.id)
-                startActivity(intent)
+                Log.i(TAG, "Favour selected, do nothing.")
             }
         }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_map)
 
         FirebaseFirestore.setLoggingEnabled(true)
 
@@ -53,15 +47,15 @@ class MainActivity : AppCompatActivity(),
             viewModel.initFavourAdapter(onFavourSelectedListener)
         }
 
-        favourRecycler = findViewById(R.id.main_recycler_restaurants)
-        favourRecycler.layoutManager = LinearLayoutManager(this)
-        favourRecycler.adapter = viewModel.favourAdapter
+        findViewById<View>(R.id.main_map_add_button).setOnClickListener {
+                val favour = viewModel.favourAdapter?.getFavour(2)
+                Log.i(TAG, "2nd favour: ${favour!!.title}")
 
-        findViewById<View>(R.id.main_add_button).setOnClickListener(this)
-        findViewById<View>(R.id.main_google_maps_button).setOnClickListener(this)
-
-        if (shouldStartSignIn()) {
-            startSignIn()
+                val intent = Intent(this, AddFavourActivity::class.java)
+                startActivity(intent)
+        }
+        findViewById<View>(R.id.main_map_recycler_button).setOnClickListener {
+            onBackPressed()
         }
     }
 
@@ -77,11 +71,10 @@ class MainActivity : AppCompatActivity(),
         viewModel.favourAdapter?.stopListening()
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.main_add_button -> onAddClicked(v)
-            R.id.main_google_maps_button -> onGoogleMapButtonClicked(v)
-        }
+    override fun onMapReady(googleMap: GoogleMap) {
+        Log.i(TAG, "Inside onMapReady")
+
+        map = googleMap
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -106,26 +99,13 @@ class MainActivity : AppCompatActivity(),
 
     private fun startSignIn() {
         val intent = AuthUI.getInstance().createSignInIntentBuilder()
-            .setAvailableProviders(Collections.singletonList(
-                AuthUI.IdpConfig.EmailBuilder().build()))
+            .setAvailableProviders(
+                Collections.singletonList(
+                    AuthUI.IdpConfig.EmailBuilder().build()))
             .setIsSmartLockEnabled(false)
             .build();
 
         startActivityForResult(intent, RC_SIGN_IN)
         viewModel.isSigningIn = true
-    }
-
-    private fun onAddClicked(v: View?) {
-        Log.i(TAG, "onAddClicked called, starting AddFavourActivity")
-
-        val intent = Intent(this, AddFavourActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun onGoogleMapButtonClicked(v: View?) {
-        Log.i(TAG, "onGoogleMapButtonClicked called, starting MainMapActivity")
-
-        val intent = Intent(this, MainMapActivity::class.java)
-        startActivity(intent)
     }
 }

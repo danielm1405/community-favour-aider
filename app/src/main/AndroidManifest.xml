@@ -21,6 +21,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".MainMapActivity" />
+
         <activity android:name=".AddFavourActivity" />
 
         <activity android:name=".FavourDetailsActivity" />
