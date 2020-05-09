@@ -46,17 +46,6 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
-    private val favourAdapter: FavourAdapter =
-        object : FavourAdapter(query, onFavourSelectedListener) {
-            override fun onDataChanged() {
-                if (itemCount == 0) {
-                    favourRecycler.visibility = View.GONE
-                } else {
-                    favourRecycler.visibility = View.VISIBLE
-                }
-            }
-        }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,12 +54,15 @@ class MainActivity : AppCompatActivity(),
         FirebaseFirestore.setLoggingEnabled(true)
 
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
+        if (viewModel.favourAdapter == null) {
+            viewModel.initFavourAdapter(query, onFavourSelectedListener)
+        }
 
-        favourRecycler = findViewById(R.id.recycler_restaurants)
+        favourRecycler = findViewById(R.id.main_recycler_restaurants)
         favourRecycler.layoutManager = LinearLayoutManager(this)
-        favourRecycler.adapter = favourAdapter
+        favourRecycler.adapter = viewModel.favourAdapter
 
-        findViewById<View>(R.id.add_button).setOnClickListener(this)
+        findViewById<View>(R.id.main_add_button).setOnClickListener(this)
 
         if (shouldStartSignIn()) {
             startSignIn()
@@ -80,18 +72,18 @@ class MainActivity : AppCompatActivity(),
     override fun onStart() {
         super.onStart()
 
-        favourAdapter.startListening()
+        viewModel.favourAdapter?.startListening()
     }
 
     override fun onStop() {
         super.onStop()
 
-        favourAdapter.stopListening()
+        viewModel.favourAdapter?.stopListening()
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.add_button -> onAddClicked(v)
+            R.id.main_add_button -> onAddClicked(v)
         }
     }
 
@@ -127,6 +119,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun onAddClicked(v: View?) {
+        val favour = viewModel.favourAdapter?.getFavour(2)
+        Log.i(TAG, "2nd favour: ${favour!!.title}")
+
         val intent = Intent(this, AddFavourActivity::class.java)
         startActivity(intent)
     }
