@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="12dp"
     tools:context=".FavourDetailsActivity" >
 
     <TextView
@@ -11,9 +12,6 @@
         style="@style/AppTheme.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginTop="6dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         tools:text="12.12.2112" />
@@ -24,8 +22,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/favour_details_modification_date"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
         android:layout_marginBottom="4dp"
         android:ellipsize="end"
         android:maxLines="3"
@@ -79,18 +75,26 @@
         android:layout_toRightOf="@+id/favour_details_location"
         android:layout_alignBottom="@+id/favour_details_location"
         tools:text="Warsaw" />
+
+    <fragment
+        android:id="@+id/favour_details_location_map"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/favour_details_location"
+        android:layout_marginTop="8dp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"/>
     
     <Button
         android:id="@+id/favour_details_accept"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="6dp"
         android:text="Accept" />
 
 </RelativeLayout>
