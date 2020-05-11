@@ -8,6 +8,7 @@ import java.util.*
 @IgnoreExtraProperties
 data class Favour(val userId: String = "",
                   val userName: String = "",
+                  val option: String = "REQUEST",
                   val title: String = "",
                   val description: String = "",
                   val adress: String = "",

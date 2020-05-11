@@ -92,6 +92,12 @@ class FavourDetailsActivity : AppCompatActivity(),
         favourAdress.text = favour?.adress
         favourLatLng = LatLng(favour!!.latitiude, favour.longitude)
 
+        if (favour.option == "REQUEST") {
+            findViewById<Button>(R.id.favour_details_accept).text = "OFFER YOUR HELP"
+        } else if (favour.option == "OFFER") {
+            findViewById<Button>(R.id.favour_details_accept).text = "ACCEPT HELP"
+        }
+
         if (map == null) {
             Log.w(TAG, "Map is null in 'onEvent'.")
         }

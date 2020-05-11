@@ -3,9 +3,7 @@ package com.example.communityfavouraider
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.communityfavouraider.model.Favour
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,8 +23,10 @@ class AddFavourActivity : AppCompatActivity(),
                           GoogleMap.OnMapLongClickListener {
 
     private val TAG = "AddFavourActivity"
+    private val FAVOUR_OPTIONS = arrayOf("REQUEST", "OFFER")
 
     // Forms
+    private lateinit var favourOption: Spinner
     private lateinit var favourTitle: EditText
     private lateinit var favourDescription: EditText
     private lateinit var favourAdress: TextView
@@ -53,6 +53,12 @@ class AddFavourActivity : AppCompatActivity(),
         favourTitle = findViewById(R.id.add_favour_title)
         favourDescription = findViewById(R.id.add_favour_description)
         favourAdress = findViewById(R.id.add_favour_adress)
+
+        // spinner
+        favourOption = findViewById(R.id.add_favour_option)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
+                                    FAVOUR_OPTIONS)
+        favourOption.adapter = adapter
 
         setValidators()
 
@@ -114,6 +120,7 @@ class AddFavourActivity : AppCompatActivity(),
 
         val favour = Favour(FirebaseAuth.getInstance().currentUser!!.uid,
                             userName,
+                            favourOption.selectedItem.toString(),
                             favourTitle.text.toString(),
                             favourDescription.text.toString(),
                             favourAdress.text.toString(),
