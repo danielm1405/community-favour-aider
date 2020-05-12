@@ -15,7 +15,13 @@ class MainActivityViewModel : ViewModel() {
                                                 .collection("favours")
 
         var query: Query = defaultQuery
+
+        public fun reset() {
+            query = defaultQuery
+        }
     }
+
+
 
     var isSigningIn = false
 

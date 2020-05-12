@@ -114,6 +114,8 @@ class MainMapActivity : AppCompatActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_sign_out -> {
+                MainActivityViewModel.reset()
+
                 AuthUI.getInstance().signOut(this)
                 startSignIn()
             }

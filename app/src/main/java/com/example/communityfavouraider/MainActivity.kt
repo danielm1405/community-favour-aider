@@ -104,7 +104,19 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (filters.hasStatus()) {
-            query = query.whereEqualTo("status", filters.status)
+            val splittedStatus = filters.status!!.split(" ")
+
+            val status = splittedStatus[0]
+            query = query.whereEqualTo("status", status)
+
+            val isByMe = splittedStatus.last().contains("me")
+            if (isByMe && status == "FREE") {
+                query = query.whereEqualTo("submittingUserId",
+                    FirebaseAuth.getInstance().currentUser?.uid)
+            } else if (isByMe && status == "ACCEPTED") {
+                query = query.whereEqualTo("respondingUserId",
+                    FirebaseAuth.getInstance().currentUser?.uid)
+            }
         }
 
         if (filters.hasSortBy()) {
@@ -127,6 +139,8 @@ class MainActivity : AppCompatActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_sign_out -> {
+                MainActivityViewModel.reset()
+
                 AuthUI.getInstance().signOut(this)
                 startSignIn()
             }

@@ -13,7 +13,9 @@
     <string-array name="statuses">
         <item>@string/value_any_status</item>
         <item>"FREE"</item>
+        <item>"FREE (submitted by me)"</item>
         <item>"ACCEPTED"</item>
+        <item>"ACCEPTED (by me)"</item>
     </string-array>
 
     <string name="sort_by_submit_date">Sort by submit date</string>
