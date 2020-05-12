@@ -55,6 +55,9 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/favour_details_by"
         android:layout_alignBottom="@+id/favour_details_by"
+        android:clickable="true"
+        android:focusable="true"
+        android:textColor="@color/hyperlink"
         tools:text="User name" />
 
     <TextView

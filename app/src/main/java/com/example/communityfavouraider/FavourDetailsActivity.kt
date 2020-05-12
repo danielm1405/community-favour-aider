@@ -1,5 +1,6 @@
 package com.example.communityfavouraider
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -28,12 +29,16 @@ class FavourDetailsActivity : AppCompatActivity(),
 
     private var map: GoogleMap? = null
 
+    // Views
     private lateinit var favourTitle: TextView
     private lateinit var favourDescription: TextView
     private lateinit var favourUserName: TextView
     private lateinit var favourModificationDate: TextView
     private lateinit var favourAdress: TextView
+
+    // Additional info
     private var favourLatLng: LatLng? = null
+    private var favourUserId: String? = null
 
     private lateinit var favourRef: DocumentReference
     private lateinit var favourRegistration: ListenerRegistration
@@ -55,7 +60,12 @@ class FavourDetailsActivity : AppCompatActivity(),
         favourModificationDate = findViewById(R.id.favour_details_modification_date)
         favourAdress = findViewById(R.id.favour_details_location_adress)
 
-        findViewById<Button>(R.id.favour_details_accept).setOnClickListener { onAcceptClicked() }
+        findViewById<TextView>(R.id.favour_details_user_name).setOnClickListener {
+            onUserNameClicked()
+        }
+        findViewById<Button>(R.id.favour_details_accept).setOnClickListener {
+            onAcceptClicked()
+        }
 
         val favourId: String = intent.getStringExtra(KEY_FAVOUR_ID)
             ?: throw IllegalArgumentException("Must pass extra $KEY_FAVOUR_ID")
@@ -83,14 +93,16 @@ class FavourDetailsActivity : AppCompatActivity(),
             return
         }
 
-        val favour = snapshot?.toObject(Favour::class.java)
+        val favour = snapshot?.toObject(Favour::class.java) ?: return
 
-        favourTitle.text = favour?.title
-        favourDescription.text = favour?.description
-        favourUserName.text = favour?.userName
-        favourModificationDate.text = dateFormatter.format(favour?.timeStamp)
-        favourAdress.text = favour?.adress
-        favourLatLng = LatLng(favour!!.latitiude, favour.longitude)
+        favourTitle.text = favour.title
+        favourDescription.text = favour.description
+        favourUserName.text = favour.userName
+        favourModificationDate.text = dateFormatter.format(favour.timeStamp!!)
+        favourAdress.text = favour.adress
+
+        favourLatLng = LatLng(favour.latitiude, favour.longitude)
+        favourUserId = favour.userId
 
         if (favour.option == "REQUEST") {
             findViewById<Button>(R.id.favour_details_accept).text = "OFFER YOUR HELP"
@@ -121,6 +133,14 @@ class FavourDetailsActivity : AppCompatActivity(),
         Log.w(TAG, "Accept clicked!")
         // TODO: implement
         findViewById<Button>(R.id.favour_details_accept).text = "Clicked - TODO: impelement"
+    }
+
+    private fun onUserNameClicked() {
+        Log.w(TAG, "User name ${favourUserName.text} clicked!")
+
+        val intent = Intent(this, UserDetailsActivity::class.java)
+        intent.putExtra(UserDetailsActivity.KEY_USER_ID, favourUserId)
+        startActivity(intent)
     }
 
     private fun centerCameraOnLocationAndSetMarker() {
