@@ -97,10 +97,14 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onFilter(filters: Filters) {
-        var query = viewModel.defaultQuery
+        var query = MainActivityViewModel.defaultQuery
 
         if (filters.hasOption()) {
             query = query.whereEqualTo("option", filters.option)
+        }
+
+        if (filters.hasStatus()) {
+            query = query.whereEqualTo("status", filters.status)
         }
 
         if (filters.hasSortBy()) {
@@ -109,7 +113,7 @@ class MainActivity : AppCompatActivity(),
 
         query = query.limit(MainActivityViewModel.LIMIT)
 
-        viewModel.query = query
+        MainActivityViewModel.query = query
 
         viewModel.favourAdapter?.setQuery(query)
         viewModel.filters = filters

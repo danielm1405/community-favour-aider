@@ -24,6 +24,7 @@ class FilterDialogFragment : DialogFragment(), View.OnClickListener {
     private lateinit var rootView: View
 
     private lateinit var optionSpinner: Spinner
+    private lateinit var statusSpinner: Spinner
     private lateinit var sortSpinner: Spinner
 
     private lateinit var filterListener: FilterListener
@@ -34,6 +35,7 @@ class FilterDialogFragment : DialogFragment(), View.OnClickListener {
         rootView = inflater.inflate(R.layout.dialog_filters, container, false)
 
         optionSpinner = rootView.findViewById(R.id.spinner_option)
+        statusSpinner = rootView.findViewById(R.id.spinner_status)
         sortSpinner = rootView.findViewById(R.id.spinner_sort)
 
         rootView.findViewById<Button>(R.id.button_search).setOnClickListener(this)
@@ -88,12 +90,23 @@ class FilterDialogFragment : DialogFragment(), View.OnClickListener {
         }
     }
 
+    private fun getSelectedStatus(): String? {
+        val selected = statusSpinner.selectedItem as String
+        return if (getString(R.string.value_any_status) == selected) {
+            null
+        } else {
+            selected
+        }
+    }
+
     private fun getSelectedSortBy(): String? {
         val selected = sortSpinner.selectedItem as String
-        if (getString(R.string.sort_by_submit_date) == selected) {
-            return "timeStamp"
+        return if (getString(R.string.sort_by_submit_date) == selected) {
+            "timeStamp"
+        } else if (getString(R.string.sort_by_title) == selected) {
+            "title"
         } else {
-            return null
+            null
         }
     }
 
@@ -110,6 +123,7 @@ class FilterDialogFragment : DialogFragment(), View.OnClickListener {
         val filters = Filters()
 
         filters.option = getSelectedOption()
+        filters.status = getSelectedStatus()
 
         filters.sortBy = getSelectedSortBy()
         filters.sortDirection = getSortDirection()

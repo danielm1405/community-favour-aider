@@ -9,7 +9,6 @@ import java.util.*
 //enum class FavourStatus(val value: Int) {
 //    FREE(0),
 //    ACCEPTED(1),
-//    BOUND(2)
 //}
 
 @IgnoreExtraProperties

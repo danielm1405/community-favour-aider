@@ -12,47 +12,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Filters header" />
+        android:text="Filter" />
 
-    <!-- Food Type -->
+    <!-- Options -->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/icon_category"
+            android:id="@+id/icon_options"
             style="@style/AppTheme.FilterIcon"
             android:layout_centerVertical="true"
             android:tint="@color/greySecondary"
-            app:srcCompat="@drawable/ic_close_24dp" />
+            app:srcCompat="@drawable/helping_hand" />
 
         <Spinner
             android:id="@+id/spinner_option"
             style="@style/AppTheme.FilterSpinner"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/icon_category"
-            android:entries="@array/options"  />
+            android:layout_toRightOf="@+id/icon_options"
+            android:entries="@array/options" />
 
     </RelativeLayout>
 
-    <!-- Location -->
+    <!-- Status -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/icon_city"
+            android:id="@+id/icon_status"
             style="@style/AppTheme.FilterIcon"
             android:layout_centerVertical="true"
             android:tint="@color/greySecondary"
-            app:srcCompat="@drawable/ic_close_24dp" />
+            app:srcCompat="@drawable/three_dots" />
 
         <Spinner
-            android:id="@+id/spinner_city"
+            android:id="@+id/spinner_status"
             style="@style/AppTheme.FilterSpinner"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/icon_city"
-            android:spinnerMode="dialog" />
+            android:layout_toRightOf="@+id/icon_status"
+            android:entries="@array/statuses" />
 
     </RelativeLayout>
 
@@ -66,7 +66,7 @@
             style="@style/AppTheme.FilterIcon"
             android:layout_centerVertical="true"
             android:tint="@color/greySecondary"
-            app:srcCompat="@drawable/ic_close_24dp" />
+            app:srcCompat="@drawable/ic_sort_24dp" />
 
         <Spinner
             android:id="@+id/spinner_sort"

@@ -5,6 +5,7 @@ import com.google.firebase.firestore.Query
 
 class Filters {
     public var option: String? = null
+    public var status: String? = null
 
     public var sortBy: String? = null
     public var sortDirection: Query.Direction? = null
@@ -23,6 +24,10 @@ class Filters {
 
     public fun hasOption() : Boolean {
         return option != null && option!!.isNotBlank()
+    }
+
+    public fun hasStatus() : Boolean {
+        return status != null && status!!.isNotBlank()
     }
 
     public fun hasSortBy () : Boolean {
