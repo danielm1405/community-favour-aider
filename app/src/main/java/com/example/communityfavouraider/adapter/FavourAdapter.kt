@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.communityfavouraider.R
 import com.example.communityfavouraider.model.Favour
@@ -42,7 +41,7 @@ open class FavourAdapter(query: Query, private val listener: OnFavourSelectedLis
 
             titleView.text = favour?.title
             descriptionView.text = favour?.description
-            userNameView.text = favour?.userName
+            userNameView.text = favour?.submittingUserName
 
             if (favour?.option == "REQUEST") {
                 helpOptionIcon.setImageResource(R.drawable.help_me)

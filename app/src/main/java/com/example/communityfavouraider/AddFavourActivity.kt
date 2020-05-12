@@ -118,14 +118,14 @@ class AddFavourActivity : AppCompatActivity(),
         val userName = (FirebaseAuth.getInstance().currentUser?.displayName ?:
                             FirebaseAuth.getInstance().currentUser?.email) ?: ""
 
-        val favour = Favour(FirebaseAuth.getInstance().currentUser!!.uid,
-                            userName,
-                            favourOption.selectedItem.toString(),
-                            favourTitle.text.toString(),
-                            favourDescription.text.toString(),
-                            favourAdress.text.toString(),
-                            favourLatLng!!.latitude,
-                            favourLatLng!!.longitude)
+        val favour = Favour(submittingUserId = FirebaseAuth.getInstance().currentUser!!.uid,
+                            submittingUserName = userName,
+                            option = favourOption.selectedItem.toString(),
+                            title = favourTitle.text.toString(),
+                            description = favourDescription.text.toString(),
+                            adress = favourAdress.text.toString(),
+                            latitiude = favourLatLng!!.latitude,
+                            longitude = favourLatLng!!.longitude)
 
         favours.add(favour)
             .addOnSuccessListener { documentReference ->

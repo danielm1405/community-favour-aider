@@ -21,7 +21,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.EventListener
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -148,7 +147,7 @@ class MainMapActivity : AppCompatActivity(),
         if (title.length > 15) {
             title = title.take(12) + "..."
         }
-        var userName = favour.userName
+        var userName = favour.submittingUserName
         if (userName.length > 23) {
             userName = userName.take(20) + "..."
         }

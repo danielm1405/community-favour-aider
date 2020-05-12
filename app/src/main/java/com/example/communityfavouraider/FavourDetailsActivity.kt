@@ -1,17 +1,21 @@
 package com.example.communityfavouraider
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.communityfavouraider.model.Favour
+import com.example.communityfavouraider.model.FavourStatus
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import java.text.SimpleDateFormat
 
@@ -28,13 +32,20 @@ class FavourDetailsActivity : AppCompatActivity(),
 
     private var map: GoogleMap? = null
 
+    // Views
     private lateinit var favourTitle: TextView
     private lateinit var favourDescription: TextView
     private lateinit var favourUserName: TextView
     private lateinit var favourModificationDate: TextView
     private lateinit var favourAdress: TextView
-    private var favourLatLng: LatLng? = null
+    private lateinit var favourAcceptButton: Button
 
+    // Additional info
+    private var favourLatLng: LatLng? = null
+    private var favourUserId: String? = null
+
+    // Firebase
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var favourRef: DocumentReference
     private lateinit var favourRegistration: ListenerRegistration
 
@@ -54,14 +65,19 @@ class FavourDetailsActivity : AppCompatActivity(),
         favourUserName = findViewById(R.id.favour_details_user_name)
         favourModificationDate = findViewById(R.id.favour_details_modification_date)
         favourAdress = findViewById(R.id.favour_details_location_adress)
+        favourAcceptButton = findViewById(R.id.favour_details_accept)
 
-        findViewById<Button>(R.id.favour_details_accept).setOnClickListener { onAcceptClicked() }
+        findViewById<TextView>(R.id.favour_details_user_name).setOnClickListener {
+            onUserNameClicked()
+        }
+        favourAcceptButton.setOnClickListener {
+            onAcceptClicked()
+        }
 
         val favourId: String = intent.getStringExtra(KEY_FAVOUR_ID)
             ?: throw IllegalArgumentException("Must pass extra $KEY_FAVOUR_ID")
 
-        favourRef = FirebaseFirestore.getInstance()
-            .collection("favours")
+        favourRef = firestore.collection("favours")
             .document(favourId)
     }
 
@@ -83,19 +99,21 @@ class FavourDetailsActivity : AppCompatActivity(),
             return
         }
 
-        val favour = snapshot?.toObject(Favour::class.java)
+        val favour = snapshot?.toObject(Favour::class.java) ?: return
 
-        favourTitle.text = favour?.title
-        favourDescription.text = favour?.description
-        favourUserName.text = favour?.userName
-        favourModificationDate.text = dateFormatter.format(favour?.timeStamp)
-        favourAdress.text = favour?.adress
-        favourLatLng = LatLng(favour!!.latitiude, favour.longitude)
+        favourTitle.text = favour.title
+        favourDescription.text = favour.description
+        favourUserName.text = favour.submittingUserName
+        favourModificationDate.text = dateFormatter.format(favour.timeStamp!!)
+        favourAdress.text = favour.adress
+
+        favourLatLng = LatLng(favour.latitiude, favour.longitude)
+        favourUserId = favour.submittingUserId
 
         if (favour.option == "REQUEST") {
-            findViewById<Button>(R.id.favour_details_accept).text = "OFFER YOUR HELP"
+            favourAcceptButton.text = "OFFER YOUR HELP"
         } else if (favour.option == "OFFER") {
-            findViewById<Button>(R.id.favour_details_accept).text = "ACCEPT HELP"
+            favourAcceptButton.text = "ACCEPT HELP"
         }
 
         if (map == null) {
@@ -118,9 +136,59 @@ class FavourDetailsActivity : AppCompatActivity(),
     }
 
     private fun onAcceptClicked() {
-        Log.w(TAG, "Accept clicked!")
-        // TODO: implement
-        findViewById<Button>(R.id.favour_details_accept).text = "Clicked - TODO: impelement"
+        Log.w(TAG, "onAcceptClicked: Accept clicked!")
+
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return
+
+        firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(favourRef)
+            val currentFavour = snapshot.toObject(Favour::class.java)
+
+            if (currentFavour?.status == FavourStatus.ACCEPTED.value) {
+                return@runTransaction -1
+            }
+
+            transaction.update(favourRef, "status", FavourStatus.ACCEPTED.value)
+            transaction.update(favourRef, "respondingUserId", currentUser.uid)
+            transaction.update(favourRef, "respondingUserName", currentUser.displayName)
+        }
+            .addOnSuccessListener {
+                if(it == -1) {
+                    Log.e(TAG, "onAcceptClicked: Favour not updated, " +
+                            "because status is already ACCEPTED.")
+
+                    Snackbar.make(
+                        findViewById(R.id.activity_favour_details),
+                        "Failed to accept the offer, offer is already accepted",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Log.i(TAG, "onAcceptClicked: Favour successfully updated: status = ACCEPTED.")
+
+                    Snackbar.make(
+                        findViewById(R.id.activity_favour_details),
+                        "Offer successfully accepted",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            .addOnFailureListener {e ->
+                Log.e(TAG, "onAcceptClicked: Favour not updated, error occurred.", e)
+
+                Snackbar.make(
+                    findViewById(R.id.activity_favour_details),
+                    "Failed to accept the offer, error occurred",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    private fun onUserNameClicked() {
+        Log.w(TAG, "onUserNameClicked: User name ${favourUserName.text} clicked!")
+
+        val intent = Intent(this, UserDetailsActivity::class.java)
+        intent.putExtra(UserDetailsActivity.KEY_USER_ID, favourUserId)
+        startActivity(intent)
     }
 
     private fun centerCameraOnLocationAndSetMarker() {

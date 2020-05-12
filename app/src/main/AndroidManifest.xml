@@ -27,6 +27,8 @@
 
         <activity android:name=".FavourDetailsActivity" />
 
+        <activity android:name=".UserDetailsActivity" />
+
     </application>
 
 </manifest>
