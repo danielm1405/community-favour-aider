@@ -6,17 +6,16 @@ import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 
 
-enum class FavourStatus(val value: Int) {
-    FREE(0),
-    ACCEPTED(1),
-    BOUND(2)
-}
+//enum class FavourStatus(val value: Int) {
+//    FREE(0),
+//    ACCEPTED(1),
+//}
 
 @IgnoreExtraProperties
 data class Favour(val submittingUserId: String = "",
                   val submittingUserName: String = "",
                   val option: String = "REQUEST",
-                  val status: Int = FavourStatus.FREE.value,
+                  val status: String = "FREE",
                   val title: String = "",
                   val description: String = "",
                   val adress: String = "",
