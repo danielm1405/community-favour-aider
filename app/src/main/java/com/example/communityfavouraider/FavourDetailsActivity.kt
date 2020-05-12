@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.communityfavouraider.model.Favour
-import com.example.communityfavouraider.model.FavourStatus
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -144,11 +143,11 @@ class FavourDetailsActivity : AppCompatActivity(),
             val snapshot = transaction.get(favourRef)
             val currentFavour = snapshot.toObject(Favour::class.java)
 
-            if (currentFavour?.status == FavourStatus.ACCEPTED.value) {
+            if (currentFavour?.status == "ACCEPTED") {
                 return@runTransaction -1
             }
 
-            transaction.update(favourRef, "status", FavourStatus.ACCEPTED.value)
+            transaction.update(favourRef, "status", "ACCEPTED")
             transaction.update(favourRef, "respondingUserId", currentUser.uid)
             transaction.update(favourRef, "respondingUserName", currentUser.displayName)
         }

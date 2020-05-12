@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,13 +23,16 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity(),
-                     View.OnClickListener {
+                     View.OnClickListener,
+                     FilterDialogFragment.FilterListener {
 
     private val TAG = "MainActivity"
     private val RC_SIGN_IN = 9001
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var favourRecycler: RecyclerView
+
+    private val filterDialog = FilterDialogFragment()
 
     // Firebase
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -43,7 +47,6 @@ class MainActivity : AppCompatActivity(),
                 startActivity(intent)
             }
         }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +65,7 @@ class MainActivity : AppCompatActivity(),
 
         findViewById<View>(R.id.main_add_button).setOnClickListener(this)
         findViewById<View>(R.id.main_google_maps_button).setOnClickListener(this)
+        findViewById<CardView>(R.id.filter_bar).setOnClickListener(this)
 
         if (shouldStartSignIn()) {
             startSignIn()
@@ -84,9 +88,28 @@ class MainActivity : AppCompatActivity(),
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.main_add_button -> onAddClicked(v)
-            R.id.main_google_maps_button -> onGoogleMapButtonClicked(v)
+            R.id.main_add_button -> onAddClicked()
+            R.id.main_google_maps_button -> onGoogleMapButtonClicked()
+            R.id.filter_bar -> onFilterClicked()
         }
+    }
+
+    override fun onFilter(filters: Filters) {
+        var query = viewModel.query
+
+        if (filters.hasOption()) {
+            query = query.whereEqualTo("option", filters.option)
+        }
+
+        if (filters.hasSortBy()) {
+            query = query.orderBy(filters.sortBy!!, filters.sortDirection!!)
+        }
+
+        query = query.limit(MainActivityViewModel.LIMIT)
+
+        viewModel.query = query
+        viewModel.favourAdapter?.setQuery(query)
+        viewModel.filters = filters
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -172,17 +195,23 @@ class MainActivity : AppCompatActivity(),
         viewModel.isSigningIn = true
     }
 
-    private fun onAddClicked(v: View?) {
+    private fun onAddClicked() {
         Log.i(TAG, "onAddClicked called, starting AddFavourActivity")
 
         val intent = Intent(this, AddFavourActivity::class.java)
         startActivity(intent)
     }
 
-    private fun onGoogleMapButtonClicked(v: View?) {
+    private fun onGoogleMapButtonClicked() {
         Log.i(TAG, "onGoogleMapButtonClicked called, starting MainMapActivity")
 
         val intent = Intent(this, MainMapActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun onFilterClicked() {
+        Log.i(TAG, "onFilterClicked called, starting FilterDialogFragment")
+
+        filterDialog.show(supportFragmentManager, FilterDialogFragment.TAG)
     }
 }

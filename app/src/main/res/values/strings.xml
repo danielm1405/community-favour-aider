@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">CommunityFavourAider</string>
+
+    <string name="value_any_option">REQUEST or OFFER</string>
+<!--    <string name="value_any_city">Anywhere</string>-->
+<!--    <string name="value_any_price">Any price</string>-->
+
+    <string-array name="options">
+        <item>@string/value_any_option</item>
+        <item>"REQUEST"</item>
+        <item>"OFFER"</item>
+    </string-array>
+
+    <string-array name="sort_by">
+        <item>"Something"</item>
+    </string-array>
+
+    <string name="sort_by_submit_date">Sort by submit date</string>
+<!--    <string name="sort_by_popularity">Sort by Popularity</string>-->
+<!--    <string name="sort_by_price">Sort by Price</string>-->
+
 </resources>
