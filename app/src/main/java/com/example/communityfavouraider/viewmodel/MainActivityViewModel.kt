@@ -14,11 +14,12 @@ class MainActivityViewModel : ViewModel() {
 
     var isSigningIn = false
 
-    var query: Query = FirebaseFirestore.getInstance().collection("favours")
+    val defaultQuery: Query = FirebaseFirestore.getInstance().collection("favours")
+    var query: Query = defaultQuery
 
     var filters = Filters.getDefault()
 
-    public var favourAdapter: FavourAdapter? = null
+    var favourAdapter: FavourAdapter? = null
 
     fun initFavourAdapter(listener: FavourAdapter.OnFavourSelectedListener) {
         favourAdapter = FavourAdapter(query, listener)

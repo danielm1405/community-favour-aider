@@ -68,7 +68,7 @@ class FilterDialogFragment : DialogFragment(), View.OnClickListener {
     private fun onSearchClicked() {
         Log.i(TAG, "onSearchClicked")
 
-//        filterListener.onFilter()
+        filterListener.onFilter(getFilters())
 
         dismiss()
     }
@@ -106,7 +106,7 @@ class FilterDialogFragment : DialogFragment(), View.OnClickListener {
         }
     }
 
-    fun getFilters(): Filters? {
+    private fun getFilters(): Filters {
         val filters = Filters()
 
         filters.option = getSelectedOption()

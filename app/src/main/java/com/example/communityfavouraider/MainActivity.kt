@@ -66,16 +66,18 @@ class MainActivity : AppCompatActivity(),
         findViewById<View>(R.id.main_add_button).setOnClickListener(this)
         findViewById<View>(R.id.main_google_maps_button).setOnClickListener(this)
         findViewById<CardView>(R.id.filter_bar).setOnClickListener(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         if (shouldStartSignIn()) {
             startSignIn()
         } else {
             Log.d(TAG, "Not needed to log in.")
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
+        onFilter(viewModel.filters)
 
         viewModel.favourAdapter?.startListening()
     }
@@ -95,7 +97,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onFilter(filters: Filters) {
-        var query = viewModel.query
+        var query = viewModel.defaultQuery
 
         if (filters.hasOption()) {
             query = query.whereEqualTo("option", filters.option)
@@ -108,6 +110,7 @@ class MainActivity : AppCompatActivity(),
         query = query.limit(MainActivityViewModel.LIMIT)
 
         viewModel.query = query
+
         viewModel.favourAdapter?.setQuery(query)
         viewModel.filters = filters
     }
