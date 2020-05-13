@@ -2,6 +2,7 @@ package com.example.communityfavouraider
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -40,6 +41,7 @@ class FavourDetailsActivity : AppCompatActivity(),
     private lateinit var favourAdress: TextView
     private lateinit var favourStatus: TextView
     private lateinit var favourRespondingUserName: TextView
+    private lateinit var favourAcceptAndReturnButton: Button
     private lateinit var favourAcceptButton: Button
 
     // Additional info
@@ -70,6 +72,7 @@ class FavourDetailsActivity : AppCompatActivity(),
         favourAdress = findViewById(R.id.favour_details_location_adress)
         favourStatus = findViewById(R.id.favour_details_status)
         favourRespondingUserName = findViewById(R.id.favour_details_responding_user_name)
+        favourAcceptAndReturnButton = findViewById(R.id.favour_details_accept_and_return)
         favourAcceptButton = findViewById(R.id.favour_details_accept)
 
         findViewById<TextView>(R.id.favour_details_user_name).setOnClickListener {
@@ -78,8 +81,11 @@ class FavourDetailsActivity : AppCompatActivity(),
         findViewById<TextView>(R.id.favour_details_responding_user_name).setOnClickListener {
             onRespondingUserNameClicked()
         }
+        favourAcceptAndReturnButton.setOnClickListener {
+            onAcceptClicked { goToAddNewWithParametersDelayed() }
+        }
         favourAcceptButton.setOnClickListener {
-            onAcceptClicked()
+            onAcceptClicked { goBackDelayed() }
         }
 
         val favourId: String = intent.getStringExtra(KEY_FAVOUR_ID)
@@ -126,11 +132,14 @@ class FavourDetailsActivity : AppCompatActivity(),
 
         // Handle button
         if (favour.status == "ACCEPTED") {
+            favourAcceptAndReturnButton.visibility = View.GONE
             favourAcceptButton.text = "TOO LATE, OFFER ALREADY CLOSED"
-            favourAcceptButton.isClickable = false
+            favourAcceptButton.visibility = View.GONE
         } else if (favour.option == "REQUEST") {
+            favourAcceptAndReturnButton.visibility = View.GONE
             favourAcceptButton.text = "OFFER YOUR HELP"
         } else if (favour.option == "OFFER") {
+            favourAcceptAndReturnButton.visibility = View.VISIBLE
             favourAcceptButton.text = "ACCEPT HELP"
         }
 
@@ -153,7 +162,7 @@ class FavourDetailsActivity : AppCompatActivity(),
         centerCameraOnLocationAndSetMarker()
     }
 
-    private fun onAcceptClicked() {
+    private fun onAcceptClicked(onSuccess: () -> Unit) {
         Log.w(TAG, "onAcceptClicked: Accept clicked!")
 
         val currentUser = FirebaseAuth.getInstance().currentUser ?: return
@@ -188,6 +197,8 @@ class FavourDetailsActivity : AppCompatActivity(),
                         "Offer successfully accepted",
                         Snackbar.LENGTH_SHORT
                     ).show()
+
+                    onSuccess()
                 }
             }
             .addOnFailureListener {e ->
@@ -199,6 +210,19 @@ class FavourDetailsActivity : AppCompatActivity(),
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
+    }
+
+    private fun goBackDelayed() {
+        Handler().postDelayed({onBackPressed()}, 1500)
+    }
+
+    private fun goToAddNewWithParametersDelayed() {
+        val intent = Intent(this, AddFavourActivity::class.java)
+
+        intent.putExtra("addresseeUserId", favourSubmittingUserId)
+        intent.putExtra("addresseeUserName", favourSubmittingUserName.text)
+
+        Handler().postDelayed({startActivity(intent)}, 1500)
     }
 
     private fun onSubmittingUserNameClicked() {

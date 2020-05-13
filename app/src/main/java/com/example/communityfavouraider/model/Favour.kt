@@ -15,13 +15,13 @@ import java.util.*
 data class Favour(val submittingUserId: String = "",
                   val submittingUserName: String = "",
                   val option: String = "REQUEST",
-                  val status: String = "FREE",
+                  var status: String = "FREE",
                   val title: String = "",
                   val description: String = "",
                   val adress: String = "",
                   val latitiude: Double = 0.0,
                   val longitude: Double = 0.0,
-                  val respondingUserId: String? = null,
-                  val respondingUserName: String? = null,
+                  var respondingUserId: String? = null,
+                  var respondingUserName: String? = null,
                   @ServerTimestamp
                   var timeStamp: Date? = null)

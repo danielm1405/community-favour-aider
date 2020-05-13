@@ -34,6 +34,9 @@ class AddFavourActivity : AppCompatActivity(),
     private lateinit var favourAdress: TextView
 
     private var favourLatLng: LatLng? = null
+    private var favourRespondingUserId: String? = null
+    private var favourRespondingUserName: String? = null
+
 
     // Google Maps
     private lateinit var map: GoogleMap
@@ -61,6 +64,15 @@ class AddFavourActivity : AppCompatActivity(),
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
                                     FAVOUR_OPTIONS)
         favourOption.adapter = adapter
+
+        favourRespondingUserId = intent.getStringExtra("addresseeUserId")
+        favourRespondingUserName = intent.getStringExtra("addresseeUserName")
+
+        if (isResponse()) {
+            favourOption.isClickable = false
+            favourOption.setSelection(1)
+            findViewById<TextView>(R.id.add_favour_text).text = "Add favour in response!"
+        }
 
         setValidators()
 
@@ -140,6 +152,12 @@ class AddFavourActivity : AppCompatActivity(),
                             latitiude = favourLatLng!!.latitude,
                             longitude = favourLatLng!!.longitude)
 
+        if (isResponse()) {
+            favour.respondingUserId = favourRespondingUserId
+            favour.respondingUserName = favourRespondingUserName
+            favour.status = "ACCEPTED"
+        }
+
         favours.add(favour)
             .addOnSuccessListener { documentReference ->
                 Log.i(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
@@ -168,5 +186,9 @@ class AddFavourActivity : AppCompatActivity(),
 
     private fun isLocationMissing() : Boolean {
         return favourLatLng == null
+    }
+
+    private fun isResponse() : Boolean {
+        return favourRespondingUserId != null && favourRespondingUserName != null
     }
 }
