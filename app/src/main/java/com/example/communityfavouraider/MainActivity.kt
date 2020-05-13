@@ -2,10 +2,12 @@ package com.example.communityfavouraider
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +33,9 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var favourRecycler: RecyclerView
+
+    private lateinit var currentSearchView: TextView
+    private lateinit var currentSortView: TextView
 
     private val filterDialog = FilterDialogFragment()
 
@@ -62,6 +67,9 @@ class MainActivity : AppCompatActivity(),
         favourRecycler = findViewById(R.id.main_recycler_restaurants)
         favourRecycler.layoutManager = LinearLayoutManager(this)
         favourRecycler.adapter = viewModel.favourAdapter
+
+        currentSearchView = findViewById(R.id.text_current_search)
+        currentSortView = findViewById(R.id.text_current_sort_by)
 
         findViewById<View>(R.id.main_add_button).setOnClickListener(this)
         findViewById<View>(R.id.main_google_maps_button).setOnClickListener(this)
@@ -129,6 +137,9 @@ class MainActivity : AppCompatActivity(),
 
         viewModel.favourAdapter?.setQuery(query)
         viewModel.filters = filters
+
+        currentSearchView.text = Html.fromHtml(filters.getFiltersDescription())
+        currentSortView.text = filters.getSortingDescription(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

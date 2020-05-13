@@ -45,35 +45,13 @@
             tools:text="Favour veeeryyy long description" />
 
         <TextView
-            android:id="@+id/favour_details_by"
-            style="@style/AppTheme.Subheader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_alignLeft="@+id/favour_details_title"
-            android:layout_below="@+id/favour_details_description"
-            android:text="Added by: " />
-
-        <TextView
-            android:id="@+id/favour_details_user_name"
-            style="@style/AppTheme.Subheader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/favour_details_by"
-            android:layout_alignBottom="@+id/favour_details_by"
-            android:clickable="true"
-            android:focusable="true"
-            android:textColor="@color/hyperlink"
-            tools:text="User name" />
-
-        <TextView
             android:id="@+id/favour_details_location"
             style="@style/AppTheme.Subheader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_alignLeft="@+id/favour_details_title"
-            android:layout_below="@+id/favour_details_by"
+            android:layout_alignBottom="@+id/favour_details_location_adress"
             android:text="Location: " />
 
         <TextView
@@ -82,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/favour_details_location"
-            android:layout_alignBottom="@+id/favour_details_location"
+            android:layout_below="@+id/favour_details_description"
             tools:text="Warsaw" />
 
         <fragment
@@ -92,6 +70,51 @@
             android:layout_below="@+id/favour_details_location"
             android:layout_marginTop="8dp"
             android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+        <TextView
+            android:id="@+id/favour_details_added_by"
+            style="@style/AppTheme.Subheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_alignLeft="@+id/favour_details_title"
+            android:layout_below="@+id/favour_details_location_map"
+            android:text="Added by: " />
+
+        <TextView
+            android:id="@+id/favour_details_user_name"
+            style="@style/AppTheme.Subheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/favour_details_added_by"
+            android:layout_alignTop="@+id/favour_details_added_by"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@color/hyperlink"
+            tools:text="User name" />
+
+        <TextView
+            android:id="@+id/favour_details_status"
+            style="@style/AppTheme.Subheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_alignLeft="@+id/favour_details_title"
+            android:layout_below="@+id/favour_details_added_by"
+            android:visibility="invisible"
+            android:text="Accepted by: " />
+
+        <TextView
+            android:id="@+id/favour_details_responding_user_name"
+            style="@style/AppTheme.Subheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/favour_details_status"
+            android:layout_alignTop="@+id/favour_details_status"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@color/hyperlink"
+            tools:text="User name" />
 
         <Button
             android:id="@+id/favour_details_accept"
