@@ -112,16 +112,17 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (filters.hasStatus()) {
-            val splittedStatus = filters.status!!.split(" ")
+            val splittedStatus = filters.status!!.split(delimiters = *arrayOf(" "), limit = 2)
 
             val status = splittedStatus[0]
             query = query.whereEqualTo("status", status)
 
-            val isByMe = splittedStatus.last().contains("me")
-            if (isByMe && status == "FREE") {
+            val isSubmittedByMe = splittedStatus.last().contains("submitted by me")
+            val isAcceptedByMe = !isSubmittedByMe && splittedStatus.last().contains("me")
+            if (isSubmittedByMe) {
                 query = query.whereEqualTo("submittingUserId",
                     FirebaseAuth.getInstance().currentUser?.uid)
-            } else if (isByMe && status == "ACCEPTED") {
+            } else if (isAcceptedByMe && status == "ACCEPTED") {
                 query = query.whereEqualTo("respondingUserId",
                     FirebaseAuth.getInstance().currentUser?.uid)
             }
