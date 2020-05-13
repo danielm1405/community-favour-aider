@@ -12,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -106,16 +107,24 @@ class AddFavourActivity : AppCompatActivity(),
     }
 
     private fun onSubmitClicked() {
-        if (isAnyInformationMissing()) {
-            // TODO: make popup window
-            findViewById<TextView>(R.id.add_favour_text).text = "One of the forms is in error state!"
-            Log.w(TAG, "One of the forms is in error state!")
+        var errorMessage: String? = null
+        if (isAnyInformationInFormMissing()) {
+            errorMessage = "Failed to submit, because one of the forms is in error state"
+        } else if (isLocationMissing()) {
+            errorMessage = "Failed to submit, because location is not chosen"
+        }
+
+        if (errorMessage != null) {
+            Log.e(TAG, errorMessage)
+
+            Snackbar.make(
+                findViewById(R.id.add_favour_layout),
+                errorMessage,
+                Snackbar.LENGTH_SHORT
+            ).show()
 
             return
         }
-
-        findViewById<TextView>(R.id.add_favour_text).text = "OK!"
-        Log.w(TAG, "OK!")
 
         val favours: CollectionReference = firestore.collection("favours");
 
@@ -152,9 +161,12 @@ class AddFavourActivity : AppCompatActivity(),
         }
     }
 
-    private fun isAnyInformationMissing(): Boolean {
+    private fun isAnyInformationInFormMissing() : Boolean {
         return favourTitle.error != null ||
-                favourDescription.error != null ||
-                favourLatLng == null
+                favourDescription.error != null
+    }
+
+    private fun isLocationMissing() : Boolean {
+        return favourLatLng == null
     }
 }
