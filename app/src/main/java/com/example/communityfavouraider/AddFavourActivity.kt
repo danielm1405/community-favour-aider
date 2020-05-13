@@ -11,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -91,6 +92,9 @@ class AddFavourActivity : AppCompatActivity(),
 
                 favourAdress.text = adresses[0].getAddressLine(0)
                 favourLatLng = latLng
+
+                map.clear()
+                map.addMarker(MarkerOptions().position(latLng).title("Your favour location"))
             }
         } catch (e: IOException) {
             Log.e(TAG, "Failed to reverse geocode. Try again.")
