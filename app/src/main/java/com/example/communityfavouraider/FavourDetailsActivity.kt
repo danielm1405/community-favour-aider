@@ -3,6 +3,7 @@ package com.example.communityfavouraider
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -34,14 +35,17 @@ class FavourDetailsActivity : AppCompatActivity(),
     // Views
     private lateinit var favourTitle: TextView
     private lateinit var favourDescription: TextView
-    private lateinit var favourUserName: TextView
+    private lateinit var favourSubmittingUserName: TextView
     private lateinit var favourModificationDate: TextView
     private lateinit var favourAdress: TextView
+    private lateinit var favourStatus: TextView
+    private lateinit var favourRespondingUserName: TextView
     private lateinit var favourAcceptButton: Button
 
     // Additional info
     private var favourLatLng: LatLng? = null
-    private var favourUserId: String? = null
+    private var favourSubmittingUserId: String? = null
+    private var favourRespondingUserId: String? = null
 
     // Firebase
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -61,13 +65,18 @@ class FavourDetailsActivity : AppCompatActivity(),
 
         favourTitle = findViewById(R.id.favour_details_title)
         favourDescription = findViewById(R.id.favour_details_description)
-        favourUserName = findViewById(R.id.favour_details_user_name)
+        favourSubmittingUserName = findViewById(R.id.favour_details_user_name)
         favourModificationDate = findViewById(R.id.favour_details_modification_date)
         favourAdress = findViewById(R.id.favour_details_location_adress)
+        favourStatus = findViewById(R.id.favour_details_status)
+        favourRespondingUserName = findViewById(R.id.favour_details_responding_user_name)
         favourAcceptButton = findViewById(R.id.favour_details_accept)
 
         findViewById<TextView>(R.id.favour_details_user_name).setOnClickListener {
-            onUserNameClicked()
+            onSubmittingUserNameClicked()
+        }
+        findViewById<TextView>(R.id.favour_details_responding_user_name).setOnClickListener {
+            onRespondingUserNameClicked()
         }
         favourAcceptButton.setOnClickListener {
             onAcceptClicked()
@@ -102,14 +111,24 @@ class FavourDetailsActivity : AppCompatActivity(),
 
         favourTitle.text = favour.title
         favourDescription.text = favour.description
-        favourUserName.text = favour.submittingUserName
+        favourSubmittingUserName.text = favour.submittingUserName
         favourModificationDate.text = dateFormatter.format(favour.timeStamp!!)
         favourAdress.text = favour.adress
 
         favourLatLng = LatLng(favour.latitiude, favour.longitude)
-        favourUserId = favour.submittingUserId
+        favourSubmittingUserId = favour.submittingUserId
+        favourRespondingUserId = favour.respondingUserId
 
-        if (favour.option == "REQUEST") {
+        if (favour.status == "ACCEPTED") {
+            favourStatus.visibility = View.VISIBLE
+            favourRespondingUserName.text = favour.respondingUserName
+        }
+
+        // Handle button
+        if (favour.status == "ACCEPTED") {
+            favourAcceptButton.text = "TOO LATE, OFFER ALREADY CLOSED"
+            favourAcceptButton.isClickable = false
+        } else if (favour.option == "REQUEST") {
             favourAcceptButton.text = "OFFER YOUR HELP"
         } else if (favour.option == "OFFER") {
             favourAcceptButton.text = "ACCEPT HELP"
@@ -182,11 +201,21 @@ class FavourDetailsActivity : AppCompatActivity(),
             }
     }
 
-    private fun onUserNameClicked() {
-        Log.w(TAG, "onUserNameClicked: User name ${favourUserName.text} clicked!")
+    private fun onSubmittingUserNameClicked() {
+        Log.w(TAG, "onSubmittingUserNameClicked: User name " +
+                "${favourSubmittingUserName.text} clicked!")
 
         val intent = Intent(this, UserDetailsActivity::class.java)
-        intent.putExtra(UserDetailsActivity.KEY_USER_ID, favourUserId)
+        intent.putExtra(UserDetailsActivity.KEY_USER_ID, favourSubmittingUserId)
+        startActivity(intent)
+    }
+
+    private fun onRespondingUserNameClicked() {
+        Log.w(TAG, "onRespondingUserNameClicked: User name " +
+                "${favourRespondingUserName.text} clicked!")
+
+        val intent = Intent(this, UserDetailsActivity::class.java)
+        intent.putExtra(UserDetailsActivity.KEY_USER_ID, favourRespondingUserId)
         startActivity(intent)
     }
 
